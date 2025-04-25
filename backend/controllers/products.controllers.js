@@ -21,7 +21,10 @@ export const createProducts = async (req, res) => {
   if (!product.name || !product.price || !product.image) {
     return res
       .status(400)
-      .json({ success: false, message: "Please provide all fields!" });
+      .json({
+        success: false,
+        message: "Please provide all fields mentioned!",
+      });
   }
 
   //   'Product' is an object coming from "./models/Product.model.js"
