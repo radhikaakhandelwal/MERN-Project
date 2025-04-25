@@ -7,6 +7,7 @@ import {
   Input,
   useColorModeValue,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import { useProductStore } from "../store/product";
 
@@ -17,26 +18,54 @@ const ProductPage = () => {
     image: "",
   });
 
+  const toast = useToast();
   const { createProducts } = useProductStore();
 
   async function handleAddProduct() {
     const { success, message } = await createProducts(newProduct);
-    console.log("success:", success);
-    console.log("message:", message);
+
+    if (success) {
+      toast({
+        title: "Product created",
+        description: "Your product has been successfully created.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Error - Product not created",
+        description: message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    setNewProduct({ name: "", price: "", image: "" });
   }
 
   return (
-    <Container maxW={"1140px"} px={4}>
+    <Container maxW={"1140px"} px={8}>
       <VStack spacing={8}>
-        <Heading as={"h1"} size={"xl"} textAlign={"center"} my={8}>
+        <Heading
+          as={"h1"}
+          size={"xl"}
+          textAlign={"center"}
+          my={8}
+          color={useColorModeValue(
+            "rgba(92, 177, 115, 0.78)",
+            "rgb(74, 93, 55)"
+          )}
+        >
           Create New Product
         </Heading>
         <Box
           w={"full"}
-          bg={useColorModeValue("white", "gray.800")}
-          p={6}
+          // bg={useColorModeValue("white", "gray.800")}
+          p={10}
           rounded={"lg"}
           shadow={"md"}
+          bgGradient="linear(to-l,rgba(45, 183, 82, 0.78),rgb(74, 93, 55) )"
         >
           <VStack spacing={4}>
             <Input
@@ -46,6 +75,7 @@ const ProductPage = () => {
               onChange={(e) =>
                 setNewProduct({ ...newProduct, name: e.target.value })
               }
+              // borderColor={useColorModeValue("pink.300", "pink.700")}
             ></Input>
             <Input
               placeholder="Product Price"

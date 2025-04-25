@@ -24,7 +24,7 @@ const Navbar = () => {
           flexDirection={{ base: "column", sm: "row" }}
         >
           <Text
-            bgGradient="linear(to-l, #7928CA, #FF0080)"
+            bgGradient="linear(to-l,rgba(45, 183, 82, 0.78),rgb(74, 93, 55) )"
             bgClip="text"
             fontSize="3xl"
             fontWeight="extrabold"
@@ -37,14 +37,14 @@ const Navbar = () => {
               <Button variant="outline">
                 <FaPlusSquare fontSize={30} />
               </Button>
-              <Button variant="outline" onClick={toggleColorMode}>
-                {colorMode === "light" ? (
-                  <IoIosSunny fontSize={30} />
-                ) : (
-                  <IoIosMoon fontSize={30} />
-                )}
-              </Button>
             </Link>
+            <Button variant="outline" onClick={toggleColorMode}>
+              {colorMode === "light" ? (
+                <IoIosSunny fontSize={30} />
+              ) : (
+                <IoIosMoon fontSize={30} />
+              )}
+            </Button>
           </HStack>
         </Flex>
       </Container>
