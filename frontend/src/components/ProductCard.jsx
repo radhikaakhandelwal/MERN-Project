@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Heading,
@@ -9,15 +9,30 @@ import {
   Link,
   useColorModeValue,
   useToast,
+  VStack,
+  Input,
+} from "@chakra-ui/react";
+
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
 
 import { useProductStore } from "../store/product";
-import Popup from "./Popup";
 
 const ProductCard = ({ product }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [updatedProduct, setUpdatedProduct] = useState(product);
+
   console.log("Image:", product.image);
   //set the colors
   let textColor = useColorModeValue(
@@ -29,7 +44,7 @@ const ProductCard = ({ product }) => {
 
   //   delete the products
   const toast = useToast();
-  let { deleteProducts } = useProductStore();
+  let { deleteProducts, updateProducts } = useProductStore();
 
   async function handleDelete(pid) {
     let { success, message } = await deleteProducts(pid);
@@ -53,6 +68,11 @@ const ProductCard = ({ product }) => {
     }
   }
 
+  async function handleUpdate(pid, updatedProduct) {
+    await updateProducts(pid, updatedProduct);
+    onClose();
+  }
+
   return (
     <Box
       shadow="lg"
@@ -61,6 +81,7 @@ const ProductCard = ({ product }) => {
       transition="all 0.3s"
       _hover={{ transform: "translateY(-5px)", shadow: "xl" }}
       bg={bg}
+      w={200}
     >
       <Image
         src={product.image}
@@ -78,19 +99,79 @@ const ProductCard = ({ product }) => {
         </Text>
       </Box>
 
-      <HStack spacing={2} alignItems={"center"} p={3}>
-        <Link to={"/create"}>
-          <Button variant="outline">
-            <CiEdit fontSize={30} />
-          </Button>
-        </Link>
+      <Box>
+        <HStack spacing={2} alignItems="center" p={8}>
+          <Link>
+            <Button variant="outline" onClick={() => onOpen()}>
+              <CiEdit fontSize={30} />
+            </Button>
+          </Link>
 
-        <Link to={"/create"}>
-          <Button variant="outline" onClick={() => handleDelete(product._id)}>
-            <MdDeleteForever />
-          </Button>
-        </Link>
-      </HStack>
+          <Link>
+            <Button variant="outline" onClick={() => handleDelete(product._id)}>
+              <MdDeleteForever fontSize={30} />
+            </Button>
+          </Link>
+        </HStack>
+      </Box>
+
+      {/* MODAL OVERLAY FOR UPDATING PRODUCTS */}
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader color={textColor}>Update Product</ModalHeader>
+          <ModalCloseButton />
+
+          <ModalBody>
+            <VStack spacing={4}>
+              <Input
+                placeholder="Product name"
+                name="name"
+                value={updatedProduct.name}
+                onChange={(e) =>
+                  setUpdatedProduct({ ...updatedProduct, name: e.target.value })
+                }
+              ></Input>
+              <Input
+                placeholder="Product Price"
+                name="price"
+                type="Number"
+                value={updatedProduct.price}
+                onChange={(e) =>
+                  setUpdatedProduct({
+                    ...updatedProduct,
+                    price: e.target.value,
+                  })
+                }
+              ></Input>
+              <Input
+                placeholder="Product Image"
+                name="image"
+                value={updatedProduct.image}
+                onChange={(e) =>
+                  setUpdatedProduct({
+                    ...updatedProduct,
+                    image: e.target.value,
+                  })
+                }
+              ></Input>
+            </VStack>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              colorScheme="green"
+              mr={3}
+              onClick={() => handleUpdate(product._id, updatedProduct)}
+            >
+              Update
+            </Button>
+            <Button variant="ghost" onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

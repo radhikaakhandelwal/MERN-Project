@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { updateProducts } from "../../../backend/controllers/products.controllers";
 // import { createProducts } from "../../../backend/controllers/products.controllers";
 
 export const useProductStore = create((set) => ({
@@ -44,6 +45,34 @@ export const useProductStore = create((set) => ({
 
     set((state) => ({
       products: state.products.filter((product) => product._id !== pid),
+    })); //use to update UI immediately to remove deleted product card without needing refresh
+
+    return { success: true, message: data.message };
+  },
+
+  updateProducts: async (pid, updatedProduct) => {
+    const res = await fetch(`/api/products/${pid}`, {
+      method: "PUT",
+      headers: {
+        "content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedProduct),
+    });
+
+    const data = await res.json();
+    if (!data.success)
+      return {
+        success: false,
+        message: data.message,
+      };
+
+    set((state) => ({
+      products: state.products.map((product) => {
+        if (product._id === pid) {
+          return data.data;
+        }
+        return product;
+      }),
     })); //use to update UI immediately to remove deleted product card without needing refresh
 
     return { success: true, message: data.message };

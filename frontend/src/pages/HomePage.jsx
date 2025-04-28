@@ -46,12 +46,9 @@ const HomePage = () => {
           spacing={10}
           w={"full"}
         >
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
-            // <Box bg="tomato" height="80px">
-            //   {p.name}
-            // </Box>
-          ))}
+          {products.map((product) => {
+            return <ProductCard product={product} key={product._id} />;
+          })}
         </SimpleGrid>
 
         {products.length === 0 && (
