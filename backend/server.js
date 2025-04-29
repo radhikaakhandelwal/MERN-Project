@@ -6,7 +6,7 @@ import ConnectDB from "./config/db.js";
 import ProductRoutes from "./routes/product.js";
 
 dotenv.config();
-console.log(process.env.MONGO_URI);
+console.log("MONGO_URI =", process.env.MONGO_URI);
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.use("/api/products", ProductRoutes);
 // if we have deployed this application
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));
-  app.get("/*", (req, res) => {
+  app.get("/{*any}", (req, res) => {
     res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
   });
 }

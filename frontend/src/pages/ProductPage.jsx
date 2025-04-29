@@ -75,7 +75,6 @@ const ProductPage = () => {
               onChange={(e) =>
                 setNewProduct({ ...newProduct, name: e.target.value })
               }
-              // borderColor={useColorModeValue("pink.300", "pink.700")}
             ></Input>
             <Input
               placeholder="Product Price"
@@ -94,7 +93,7 @@ const ProductPage = () => {
                 setNewProduct({ ...newProduct, image: e.target.value })
               }
             ></Input>
-            <Button onClick={handleAddProduct}></Button>
+            <Button onClick={handleAddProduct}>Add Product</Button>
           </VStack>
         </Box>
       </VStack>
